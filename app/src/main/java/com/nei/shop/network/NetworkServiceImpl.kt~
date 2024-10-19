@@ -1,0 +1,29 @@
+package com.nei.shop.network
+
+import com.nei.shop.domain.Product
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+class NetworkServiceImpl : NetworkService {
+    private val okHttpClient: OkHttpClient = HttpLoggingInterceptor().run {
+        level = HttpLoggingInterceptor.Level.BODY
+        OkHttpClient.Builder().addInterceptor(this).build()
+    }
+    private val build = Retrofit.Builder()
+        .baseUrl("https://api.mercadolibre.com/sites/MCO/")
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    private val meliService = build.create(MeliService::class.java)
+
+    override suspend fun search(query: String): Result<List<Product>> {
+        return kotlin.runCatching { meliService.search(query).results.toDomain() }
+    }
+
+}
+
+interface NetworkService {
+    suspend fun search(query: String): Result<List<Product>>
+}

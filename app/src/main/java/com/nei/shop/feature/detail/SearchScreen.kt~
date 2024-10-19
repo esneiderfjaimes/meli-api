@@ -1,4 +1,6 @@
-package com.nei.shop.feature.home
+@file:OptIn(ExperimentalMaterial3Api::class)
+
+package com.nei.shop.feature.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,13 +45,12 @@ import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.nei.shop.MainViewModel.State
 import com.nei.shop.domain.Product
+import com.nei.shop.feature.search.SearchViewModel.State
 import com.nei.shop.ui.theme.ShopTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(
+fun DetailScreen(
     state: State,
     onSearch: (String) -> Unit,
     history: Set<String> = emptySet(),
@@ -220,7 +221,7 @@ fun Home(
 @Composable
 fun HomePreview(modifier: Modifier = Modifier) {
     ShopTheme {
-        Home(
+        SearchScreen(
             state = State.Success(
                 listOf(
                     Product(
@@ -251,7 +252,7 @@ fun HomePreview(modifier: Modifier = Modifier) {
 @Composable
 fun HomePreview2(modifier: Modifier = Modifier) {
     ShopTheme {
-        Home(
+        SearchScreen(
             state = State.Init,
             onSearch = {},
         )

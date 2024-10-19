@@ -1,4 +1,4 @@
-package com.nei.shop
+package com.nei.shop.feature.detail
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -16,9 +16,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainViewModel : ViewModel() {
-    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Init)
-    val state: StateFlow<State> get() = _state
+class DetailViewModel : ViewModel() {
+    private val _state: MutableStateFlow<DetailState> = MutableStateFlow(DetailState.Init)
+    val state: StateFlow<DetailState> get() = _state
     private val _history: MutableStateFlow<Set<String>> = MutableStateFlow(setOf())
     val history: StateFlow<Set<String>> get() = _history
 
@@ -36,11 +36,11 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 if (query.isBlank()) {
-                    _state.value = State.Init
+                    _state.value = DetailState.Init
                     return@withContext
                 }
 
-                _state.value = State.Loading
+                _state.value = DetailState.Loading
 
                 val pageCharacters =
                     kotlin.runCatching {
@@ -50,10 +50,10 @@ class MainViewModel : ViewModel() {
                     onSuccess = {
                         val products = it.results.toDomain()
                         Log.d("MainViewModel", "search: products:$products")
-                        _state.value = State.Success(products)
+                        _state.value = DetailState.Success(products)
                     },
                     onFailure = {
-                        _state.value = State.Error(it.message.orEmpty())
+                        _state.value = DetailState.Error(it.message.orEmpty())
                     }
                 )
             }
@@ -64,10 +64,10 @@ class MainViewModel : ViewModel() {
         _history.value = _history.value.plus(query)
     }
 
-    sealed class State {
-        data object Init : State()
-        data object Loading : State()
-        data class Error(val message: String) : State()
-        data class Success(val products: List<Product>) : State()
+    sealed class DetailState {
+        data object Init : DetailState()
+        data object Loading : DetailState()
+        data class Error(val message: String) : DetailState()
+        data class Success(val products: List<Product>) : DetailState()
     }
 }
