@@ -1,6 +1,8 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.nei.shop.feature.search
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,21 +27,30 @@ import com.nei.shop.network.formatToCOP
 import com.nei.shop.ui.theme.ShopTheme
 
 @Composable
-fun ItemProduct(product: Product, onClick: () -> Unit = {}) {
+fun ItemProduct(
+    product: Product,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
     Row(
         Modifier
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .padding(horizontal = 32.dp, vertical = 16.dp)
     ) {
-        AsyncImage(
-            model = product.thumbnail,
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .background(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.shapes.medium)
-                .clip(MaterialTheme.shapes.medium)
-        )
+        Surface(
+            shadowElevation = 4.dp,
+            tonalElevation = 4.dp,
+            shape = MaterialTheme.shapes.medium,
+            modifier = modifier
+        ) {
+            AsyncImage(
+                model = product.thumbnail,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(100.dp)
+            )
+        }
         Spacer(Modifier.width(16.dp))
         Column {
             Text(

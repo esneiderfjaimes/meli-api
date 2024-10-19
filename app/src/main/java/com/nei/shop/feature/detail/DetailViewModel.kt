@@ -1,11 +1,16 @@
 package com.nei.shop.feature.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.toRoute
 import com.nei.shop.domain.Product
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class DetailViewModel : ViewModel() {
+class DetailViewModel(
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    private val productDetail = savedStateHandle.toRoute<DetailRoute>()
     private val _state: MutableStateFlow<DetailState> = MutableStateFlow(DetailState.Init)
     val state: StateFlow<DetailState> get() = _state
 
