@@ -12,5 +12,4 @@ plugins {
     alias(libs.plugins.hilt) apply false
     // compose
     alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.kotlin.android) apply false
 }
