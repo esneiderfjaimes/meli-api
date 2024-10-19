@@ -1,5 +1,6 @@
 package com.nei.shop.feature.search
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -13,15 +14,19 @@ import kotlinx.serialization.Serializable
 data object SearchRoute
 
 fun NavGraphBuilder.searchScreen(
-    onProductClick: (Product) -> Unit
+    onProductClick: (Product) -> Unit,
 ) {
     composable<SearchRoute> {
-        SearchRoute(onProductClick = onProductClick)
+        SearchRoute(
+            animatedContentScope = this,
+            onProductClick = onProductClick
+        )
     }
 }
 
 @Composable
 fun SearchRoute(
+    animatedContentScope: AnimatedContentScope,
     viewModel: SearchViewModel = viewModel(),
     onProductClick: (Product) -> Unit
 ) {
@@ -29,6 +34,7 @@ fun SearchRoute(
     val history by viewModel.history.collectAsStateWithLifecycle()
     SearchScreen(
         state = state,
+        animatedVisibilityScope = animatedContentScope,
         onSearch = viewModel::search,
         history = history,
         onHistory = viewModel::addHistory,

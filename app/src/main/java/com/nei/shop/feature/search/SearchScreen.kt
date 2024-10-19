@@ -1,12 +1,15 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.nei.shop.feature.search
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.nei.shop.LocalSharedTransitionScope
 import com.nei.shop.domain.Product
 import com.nei.shop.feature.search.SearchViewModel.State
 import com.nei.shop.ui.theme.ShopTheme
@@ -21,11 +25,14 @@ import com.nei.shop.ui.theme.ShopTheme
 @Composable
 fun SearchScreen(
     state: State,
+    // TODO: check null safety to preview
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
     onSearch: (String) -> Unit = {},
     history: Set<String> = emptySet(),
     onHistory: (String) -> Unit = {},
     onProductClick: (Product) -> Unit = {}
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +60,19 @@ fun SearchScreen(
                         .padding(innerPadding)
                 ) {
                     items(items = state.products) { product ->
-                        ItemProduct(product) {
+                        ItemProduct(
+                            product = product,
+                            modifier = Modifier.then(
+                                if (animatedVisibilityScope != null && sharedTransitionScope != null) {
+                                    with(sharedTransitionScope) {
+                                        Modifier.sharedElement(
+                                            state = rememberSharedContentState(key = "product-image-${product.id}"),
+                                            animatedVisibilityScope = animatedVisibilityScope
+                                        )
+                                    }
+                                } else Modifier
+                            )
+                        ) {
                             onProductClick(product)
                         }
                     }
@@ -127,7 +146,6 @@ fun HomePreview(modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 @Preview
 @Composable

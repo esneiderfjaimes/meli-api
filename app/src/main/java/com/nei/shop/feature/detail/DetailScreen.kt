@@ -1,7 +1,9 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 
 package com.nei.shop.feature.detail
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,6 +27,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.nei.shop.LocalSharedTransitionScope
 import com.nei.shop.feature.detail.model.ProductDetail
 import com.nei.shop.network.formatToCOP
 import com.nei.shop.ui.theme.ShopTheme
@@ -32,8 +35,11 @@ import com.nei.shop.ui.theme.ShopTheme
 @Composable
 fun DetailScreen(
     product: ProductDetail,
+    // TODO: check null safety to preview
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
     onBackClick: () -> Unit = {}
 ) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -62,7 +68,17 @@ fun DetailScreen(
             Surface(
                 shadowElevation = 4.dp,
                 tonalElevation = 4.dp,
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.then(
+                    if (animatedVisibilityScope != null && sharedTransitionScope != null) {
+                        with(sharedTransitionScope) {
+                            Modifier.sharedElement(
+                                state = rememberSharedContentState(key = "product-image-${product.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                        }
+                    } else Modifier
+                )
             ) {
                 AsyncImage(
                     model = product.thumbnail.replace("-I", "-O"),

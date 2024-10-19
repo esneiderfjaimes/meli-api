@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.nei.shop.navigation.NavigationHost
 import com.nei.shop.ui.theme.ShopTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +14,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ShopTheme {
-                NavigationHost()
+                ShopApp()
             }
         }
     }

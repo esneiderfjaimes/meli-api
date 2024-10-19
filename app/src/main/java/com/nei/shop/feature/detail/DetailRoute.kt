@@ -21,7 +21,11 @@ fun NavGraphBuilder.detailScreen(
     composable<DetailRoute> {
         val data = it.toRoute<DetailRoute>().data
         val product = Gson().fromJson(data, ProductDetail::class.java)
-        DetailScreen(product, onBackClick = onBackClick)
+        DetailScreen(
+            product = product,
+            animatedVisibilityScope = this,
+            onBackClick = onBackClick
+        )
     }
 }
 
