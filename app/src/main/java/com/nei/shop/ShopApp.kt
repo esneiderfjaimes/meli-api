@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class)
 
 package com.nei.shop
 

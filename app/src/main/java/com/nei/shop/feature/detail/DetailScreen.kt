@@ -4,12 +4,17 @@ package com.nei.shop.feature.detail
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextDecoration
@@ -55,52 +61,61 @@ fun DetailScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
+        Box(
+            Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(vertical = 16.dp, horizontal = 32.dp)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = product.title,
-                style = MaterialTheme.typography.titleLarge
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Surface(
-                shadowElevation = 4.dp,
-                tonalElevation = 4.dp,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.then(
-                    if (animatedVisibilityScope != null && sharedTransitionScope != null) {
-                        with(sharedTransitionScope) {
-                            Modifier.sharedElement(
-                                state = rememberSharedContentState(key = "product-image-${product.id}"),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                        }
-                    } else Modifier
-                )
+            Column(
+                Modifier
+                    .sizeIn(maxWidth = 400.dp)
+                    .fillMaxSize()
             ) {
-                AsyncImage(
-                    model = product.thumbnail.replace("-I", "-O"),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            if (product.originalPrice != product.price) {
                 Text(
-                    text = formatToCOP(product.originalPrice),
-                    textDecoration = TextDecoration.LineThrough,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.alpha(0.5f)
+                    text = product.title,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Surface(
+                    shadowElevation = 4.dp,
+                    tonalElevation = 4.dp,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.then(
+                        if (animatedVisibilityScope != null && sharedTransitionScope != null) {
+                            with(sharedTransitionScope) {
+                                Modifier.sharedElement(
+                                    state = rememberSharedContentState(key = "product-image-${product.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                            }
+                        } else Modifier
+                    )
+                ) {
+                    AsyncImage(
+                        model = product.thumbnail.replace("-I", "-O"),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                if (product.originalPrice != product.price) {
+                    Text(
+                        text = formatToCOP(product.originalPrice),
+                        textDecoration = TextDecoration.LineThrough,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.alpha(0.5f)
+                    )
+                }
+                Text(
+                    text = formatToCOP(amount = product.price),
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
-            Text(
-                text = formatToCOP(amount = product.price),
-                style = MaterialTheme.typography.bodyLarge
-            )
         }
     }
 }

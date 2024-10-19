@@ -57,21 +57,11 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
-    // For AppWidgets support
-    implementation(libs.androidx.glance.appwidget)
-
-    // For interop APIs with Material 3
-    implementation(libs.androidx.glance.material3)
-    implementation(libs.appwidget.host)
-    debugImplementation(libs.appwidget.viewer)
-
     // Compose
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.ui)
     implementation(libs.constraintlayout.compose)
 
-    // Preferences
-    implementation(libs.datastore.preferences)
     // Navigation
     implementation(libs.navigation.compose)
     implementation(libs.hilt.navigation.compose)
